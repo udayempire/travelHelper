@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  role      Role     @default(AUTHORITY)
+  createdAt DateTime @default(now())
+  alerts    Alert[]  @relation("UserAlerts")
+  logs      UsageLog[]
+}
+
+model Tourist {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String?  @unique
+  location  String?
+  aadhaar   String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  alerts    Alert[]  @relation("TouristAlerts")
+}
+
+enum AlertStatus {
+  ACTIVE
+  RESOLVED
+  ONGOING
+}
+
+model Alert {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  status      AlertStatus @default(ACTIVE)
+  touristId   String?
+  tourist     Tourist?    @relation("TouristAlerts", fields: [touristId], references: [id])
+  createdById String
+  createdBy   User        @relation("UserAlerts", fields: [createdById], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum Role {
+  AUTHORITY
+  ADMIN
+}
+
+model UsageLog {
+  id        String   @id @default(uuid())
+  action    String
+  metadata  Json?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
