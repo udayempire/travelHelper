@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button"
 import { MapComponent } from "@/components/map-component"
 import { StatsCards } from "@/components/stats-cards"
 import { AlertsTable } from "@/components/alerts-table"
-import { FileText, Send, History } from "lucide-react"
+import { FileText, Send, History, Map, ExternalLink } from "lucide-react"
+import Link from "next/link"
 
 export function DashboardOverview() {
   return (
@@ -20,15 +21,24 @@ export function DashboardOverview() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg font-semibold">India Tourist Heatmap</CardTitle>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-                  <span className="text-sm text-muted-foreground">Tourist Locations</span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">Tourist Locations</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-muted-foreground">High-Risk Zones</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <span className="text-sm text-muted-foreground">High-Risk Zones</span>
-                </div>
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/map">
+                    <Map className="h-4 w-4 mr-2" />
+                    Full Map
+                    <ExternalLink className="h-3 w-3 ml-1" />
+                  </Link>
+                </Button>
               </div>
             </CardHeader>
             <CardContent>

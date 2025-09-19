@@ -17,6 +17,9 @@ import {
   Shield,
   Menu,
   X,
+  UserPlus,
+  LogOut,
+  Map,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -28,10 +31,17 @@ interface DashboardLayoutProps {
 
 const navigation = [
   { id: 1, name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { id: 2, name: "Tourist Records", href: "/records", icon: Users },
-  { id: 3, name: "Active Alerts", href: "/active-alerts", icon: AlertTriangle },
-  { id: 4, name: "E-FIR History", href: "/efir-history", icon: FileText },
-  { id: 5, name: "Analytics", href: "/analytics", icon: BarChart3 },
+  { id: 2, name: "Tourist Records", href: "/tourist", icon: Users },
+  { id: 3, name: "Map View", href: "/map", icon: Map },
+  { id: 4, name: "Active Alerts", href: "/active-alerts", icon: AlertTriangle },
+  { id: 5, name: "E-FIR History", href: "/efir-history", icon: FileText },
+  { id: 6, name: "Analytics", href: "/analytics", icon: BarChart3 },
+]
+
+const adminNavigation = [
+  { id: 7, name: "User Management", href: "/admin/users", icon: Users },
+  { id: 8, name: "Alerts Management", href: "/admin/alerts", icon: AlertTriangle },
+  { id: 9, name: "Analytics Dashboard", href: "/admin/analytics", icon: BarChart3 },
 ]
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -39,7 +49,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname() // Get the current URL pathname
 
   const getSelectedId = () => {
-    const currentItem = navigation.find((item) => item.href === pathname)
+    const allNavigation = [...navigation, ...adminNavigation]
+    const currentItem = allNavigation.find((item) => item.href === pathname)
     return currentItem ? currentItem.id : 1 // Default to Dashboard if not found
   }
 
@@ -77,6 +88,28 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   </a>
                 </li>
               ))}
+              
+              {/* Admin Section */}
+              <div className="pt-4 mt-4 border-t border-sidebar-border">
+                <p className="text-xs font-semibold text-sidebar-foreground/70 uppercase tracking-wider mb-2">Admin</p>
+                {adminNavigation.map((item) => (
+                  <li key={item.name}>
+                    <a
+                      href={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                        getSelectedId() === item.id
+                          ? "bg-blue-500 text-white hover:bg-blue-600"
+                          : "text-sidebar-foreground hover:bg-sidebar-accent/50",
+                      )}
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </div>
             </ul>
           </nav>
         </div>
@@ -111,6 +144,31 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   ))}
                 </ul>
               </li>
+              
+              {/* Admin Section */}
+              <li>
+                <div className="text-xs font-semibold leading-6 text-sidebar-foreground/70 uppercase tracking-wider">
+                  Admin
+                </div>
+                <ul className="mt-2 space-y-1">
+                  {adminNavigation.map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium leading-6 transition-colors",
+                          getSelectedId() === item.id
+                            ? "bg-blue-500 text-white hover:bg-blue-600"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent/50",
+                        )}
+                      >
+                        <item.icon className="h-5 w-5 shrink-0" />
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
             </ul>
           </nav>
         </div>
@@ -133,6 +191,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input placeholder="Search Digital ID Record..." className="pl-10 w-64" />
               </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/tourist/login">
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Login Tourist
+                </Link>
+              </Button>
               <Button variant="ghost" size="sm">
                 <Bell className="h-5 w-5" />
               </Button>
