@@ -76,7 +76,7 @@ export default function MapPage(): JSX.Element {
         container: mapRef.current!,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: [77.524618, 23.251202], // Updated coordinates
-        zoom: 10
+        zoom: 18
       })
 
       mapInstance.on('load', () => {
@@ -100,13 +100,13 @@ export default function MapPage(): JSX.Element {
       // Simulate API call - replace with actual API
       await new Promise((r) => setTimeout(r, 1000))
       
-      // Dummy data for now - green markers spread out, red heatmap points clustered
+      // Dummy data for now - tourists positioned within green zones
       const dummyTourists: TouristLocation[] = [
         {
           id: "tourist-1",
           name: "Rahul Sharma",
-          lat: 23.251202,
-          lng: 77.524618,
+          lat: 23.2519,
+          lng: 77.5256,
           status: 'active',
           lastSeen: new Date().toISOString(),
           phone: "+91 98765 43210",
@@ -115,8 +115,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-2",
           name: "Priya Patel",
-          lat: 23.2518,
-          lng: 77.5255,
+          lat: 23.2517,
+          lng: 77.5254,
           status: 'active',
           lastSeen: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
           phone: "+91 98765 43211",
@@ -125,8 +125,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-3",
           name: "Amit Kumar",
-          lat: 23.2505,
-          lng: 77.5238,
+          lat: 23.2506,
+          lng: 77.5239,
           status: 'active',
           lastSeen: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
           phone: "+91 98765 43212",
@@ -135,8 +135,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-4",
           name: "Sneha Singh",
-          lat: 23.2522,
-          lng: 77.5250,
+          lat: 23.2523,
+          lng: 77.5251,
           status: 'active',
           lastSeen: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
           phone: "+91 98765 43213",
@@ -145,8 +145,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-5",
           name: "Vikram Gupta",
-          lat: 23.2500,
-          lng: 77.5252,
+          lat: 23.2504,
+          lng: 77.5237,
           status: 'active',
           lastSeen: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
           phone: "+91 98765 43214",
@@ -155,8 +155,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-6",
           name: "Anita Verma",
-          lat: 23.2515,
-          lng: 77.5235,
+          lat: 23.2516,
+          lng: 77.5236,
           status: 'active',
           lastSeen: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
           phone: "+91 98765 43215",
@@ -165,8 +165,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-7",
           name: "Rajesh Tiwari",
-          lat: 23.2525,
-          lng: 77.5240,
+          lat: 23.2521,
+          lng: 77.5249,
           status: 'active',
           lastSeen: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
           phone: "+91 98765 43216",
@@ -175,8 +175,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-8",
           name: "Meera Joshi",
-          lat: 23.2508,
-          lng: 77.5260,
+          lat: 23.2514,
+          lng: 77.5234,
           status: 'active',
           lastSeen: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
           phone: "+91 98765 43217",
@@ -185,8 +185,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-9",
           name: "Suresh Yadav",
-          lat: 23.2520,
-          lng: 77.5230,
+          lat: 23.2524,
+          lng: 77.5252,
           status: 'active',
           lastSeen: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
           phone: "+91 98765 43218",
@@ -195,8 +195,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-10",
           name: "Kavita Singh",
-          lat: 23.2495,
-          lng: 77.5245,
+          lat: 23.2507,
+          lng: 77.5240,
           status: 'active',
           lastSeen: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
           phone: "+91 98765 43219",
@@ -205,8 +205,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-11",
           name: "Ravi Kumar",
-          lat: 23.2530,
-          lng: 77.5258,
+          lat: 23.2518,
+          lng: 77.5253,
           status: 'active',
           lastSeen: new Date(Date.now() - 35 * 60 * 1000).toISOString(),
           phone: "+91 98765 43220",
@@ -215,8 +215,8 @@ export default function MapPage(): JSX.Element {
         {
           id: "tourist-12",
           name: "Pooja Sharma",
-          lat: 23.2498,
-          lng: 77.5265,
+          lat: 23.2520,
+          lng: 77.5248,
           status: 'active',
           lastSeen: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
           phone: "+91 98765 43221",
@@ -311,14 +311,65 @@ export default function MapPage(): JSX.Element {
           .addTo(map)
       })
 
-      // Add red heatmap points (smaller, clustered)
+      // Add red circular zones (restricted areas)
+      const redZones = [
+        { lat: 23.251202, lng: 77.524618, radius: 150 },
+        { lat: 23.2525, lng: 77.5255, radius: 120 },
+        { lat: 23.2500, lng: 77.5235, radius: 100 }
+      ]
+
+      redZones.forEach((zone, index) => {
+        const redZoneEl = document.createElement('div')
+        redZoneEl.className = 'red-zone'
+        redZoneEl.style.width = `${zone.radius}px`
+        redZoneEl.style.height = `${zone.radius}px`
+        redZoneEl.style.borderRadius = '50%'
+        redZoneEl.style.background = 'rgba(239, 68, 68, 0.2)' // Semi-transparent red
+        redZoneEl.style.border = '3px solid rgba(239, 68, 68, 0.6)'
+        redZoneEl.style.position = 'absolute'
+        redZoneEl.style.transform = 'translate(-50%, -50%)'
+        redZoneEl.style.pointerEvents = 'none'
+        redZoneEl.style.zIndex = '996'
+
+        new mapboxgl.Marker(redZoneEl)
+          .setLngLat([zone.lng, zone.lat])
+          .addTo(map)
+      })
+
+      // Add green zones (safe areas)
+      const greenZones = [
+        { lat: 23.2518, lng: 77.5255, radius: 200 },
+        { lat: 23.2505, lng: 77.5238, radius: 180 },
+        { lat: 23.2522, lng: 77.5250, radius: 160 },
+        { lat: 23.2515, lng: 77.5235, radius: 140 }
+      ]
+
+      greenZones.forEach((zone, index) => {
+        const greenZoneEl = document.createElement('div')
+        greenZoneEl.className = 'green-zone'
+        greenZoneEl.style.width = `${zone.radius}px`
+        greenZoneEl.style.height = `${zone.radius}px`
+        greenZoneEl.style.borderRadius = '50%'
+        greenZoneEl.style.background = 'rgba(16, 185, 129, 0.15)' // Semi-transparent green
+        greenZoneEl.style.border = '3px solid rgba(16, 185, 129, 0.4)'
+        greenZoneEl.style.position = 'absolute'
+        greenZoneEl.style.transform = 'translate(-50%, -50%)'
+        greenZoneEl.style.pointerEvents = 'none'
+        greenZoneEl.style.zIndex = '995'
+
+        new mapboxgl.Marker(greenZoneEl)
+          .setLngLat([zone.lng, zone.lat])
+          .addTo(map)
+      })
+
+      // Add red heatmap points (smaller, clustered in red zones)
       const heatmapPoints = [
         { lat: 23.251202, lng: 77.524618 },
         { lat: 23.251205, lng: 77.524620 },
         { lat: 23.251200, lng: 77.524615 },
-        { lat: 23.251208, lng: 77.524622 },
-        { lat: 23.251198, lng: 77.524616 },
-        { lat: 23.251206, lng: 77.524619 }
+        { lat: 23.2525, lng: 77.5255 },
+        { lat: 23.2500, lng: 77.5235 },
+        { lat: 23.2502, lng: 77.5238 }
       ]
 
       heatmapPoints.forEach((point, index) => {
@@ -337,29 +388,6 @@ export default function MapPage(): JSX.Element {
           .setLngLat([point.lng, point.lat])
           .addTo(map)
       })
-
-      // Add a single circular radius around the center of all points
-      if (touristData.length > 0) {
-        const centerLat = 23.251202
-        const centerLng = 77.524618
-        
-        const circleEl = document.createElement('div')
-        circleEl.className = 'heatmap-circle'
-        circleEl.style.width = '200px'
-        circleEl.style.height = '200px'
-        circleEl.style.borderRadius = '50%'
-        circleEl.style.background = 'rgba(239, 68, 68, 0.15)' // Semi-transparent red
-        circleEl.style.border = '3px solid rgba(239, 68, 68, 0.3)'
-        circleEl.style.position = 'absolute'
-        circleEl.style.transform = 'translate(-50%, -50%)'
-        circleEl.style.pointerEvents = 'none'
-        circleEl.style.zIndex = '997'
-
-        // Add the single circle marker at center
-        new mapboxgl.Marker(circleEl)
-          .setLngLat([centerLng, centerLat])
-          .addTo(map)
-      }
     })
   }
 

@@ -39,15 +39,15 @@ export default function LoginPage(): JSX.Element {
     try {
       setIsSubmitting(true)
       
-      // Simulate API call to fetch tourist data
-      await new Promise((r) => setTimeout(r, 1000))
+      // Simulate API call to fetch tourist data with delay
+      await new Promise((r) => setTimeout(r, 3500)) // 3.5 seconds delay
       
       // Dummy data for now - replace with actual API call
       const dummyTouristData: TouristData = {
         id: "tourist-" + Math.random().toString(36).substr(2, 9),
-        name: "John Doe",
-        phone: "+91 98765 43210",
-        location: "Mumbai, Maharashtra",
+        name: "Priyanshu Lohani",
+        phone: "9368826185",
+        location: "Gwalior, Madhya Pradesh",
         aadhaar: normalized,
         blockchainId: "0x" + Math.random().toString(16).substr(2, 40),
         sessionToken: "session_" + Math.random().toString(36).substr(2, 32),
