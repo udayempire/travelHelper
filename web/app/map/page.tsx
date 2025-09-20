@@ -43,7 +43,7 @@ export default function MapPage(): JSX.Element {
       const mapboxgl = (await import('mapbox-gl')).default
       
       // Set Mapbox access token
-      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+      const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
       if (!token) {
         setMapError(true)
         toast({
@@ -136,28 +136,31 @@ export default function MapPage(): JSX.Element {
     const existingMarkers = document.querySelectorAll('.mapboxgl-marker')
     existingMarkers.forEach(marker => marker.remove())
 
-    touristData.forEach(tourist => {
-      const el = document.createElement('div')
-      el.className = 'tourist-marker'
-      el.style.width = '20px'
-      el.style.height = '20px'
-      el.style.borderRadius = '50%'
-      el.style.background = getStatusColor(tourist.status)
-      el.style.border = '2px solid white'
-      el.style.cursor = 'pointer'
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)'
+    // Use dynamic import to get mapboxgl instance instead of relying on window
+    import('mapbox-gl').then(({ default: mapboxgl }) => {
+      touristData.forEach(tourist => {
+        const el = document.createElement('div')
+        el.className = 'tourist-marker'
+        el.style.width = '20px'
+        el.style.height = '20px'
+        el.style.borderRadius = '50%'
+        el.style.background = getStatusColor(tourist.status)
+        el.style.border = '2px solid white'
+        el.style.cursor = 'pointer'
+        el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)'
 
-      el.addEventListener('click', () => {
-        setSelectedTourist(tourist)
-        map.flyTo({
-          center: [tourist.lng, tourist.lat],
-          zoom: 15
+        el.addEventListener('click', () => {
+          setSelectedTourist(tourist)
+          map.flyTo({
+            center: [tourist.lng, tourist.lat],
+            zoom: 15
+          })
         })
-      })
 
-      new (window as any).mapboxgl.Marker(el)
-        .setLngLat([tourist.lng, tourist.lat])
-        .addTo(map)
+        new mapboxgl.Marker(el)
+          .setLngLat([tourist.lng, tourist.lat])
+          .addTo(map)
+      })
     })
   }
 

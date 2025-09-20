@@ -63,7 +63,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex h-16 items-center justify-between px-4">
             <div className="flex flex-col items-center gap-2">
               <Image src={"logo.png"} width={60} height={60} alt="logo" />
-              <span className="text-lg font-semibold text-sidebar-foreground">TripShield</span>
+              <span className="text-lg font-semibold text-sidebar-foreground">Kavach</span>
             </div>
             <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
               <X className="h-4 w-4" />
@@ -120,7 +120,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-sidebar border-r border-sidebar-border px-6 pb-4">
           <div className="flex h-16 shrink-0 items-center gap-2 mt-3">
              <Image className="rounded-2xl shadow-2xl border-[2px] border-gray-500" src={"logo.png"} width={100} height={100} alt="logo" />
-            <span className="text-xl font-semibold text-sidebar-foreground">TripShield</span>
+            <span className="text-xl font-semibold text-sidebar-foreground">Kavach</span>
           </div>
           <nav className="flex flex-1 flex-col">
             <ul className="flex flex-1 flex-col gap-y-7">

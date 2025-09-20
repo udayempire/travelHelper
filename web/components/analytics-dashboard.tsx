@@ -32,6 +32,12 @@ const touristFlowData = [
   { month: "Apr", tourists: 2100, incidents: 22, safetyScore: 91 },
   { month: "May", tourists: 1950, incidents: 16, safetyScore: 95 },
   { month: "Jun", tourists: 2300, incidents: 25, safetyScore: 89 },
+  { month: "Jul", tourists: 2450, incidents: 28, safetyScore: 87 },
+  { month: "Aug", tourists: 2200, incidents: 20, safetyScore: 92 },
+  { month: "Sep", tourists: 1950, incidents: 18, safetyScore: 94 },
+  { month: "Oct", tourists: 2100, incidents: 22, safetyScore: 91 },
+  { month: "Nov", tourists: 1850, incidents: 16, safetyScore: 95 },
+  { month: "Dec", tourists: 1750, incidents: 14, safetyScore: 96 },
 ]
 
 const incidentTypeData = [
@@ -53,20 +59,37 @@ const responseTimeData = [
 ]
 
 const locationHotspots = [
-  { location: "New Delhi", tourists: 245, incidents: 8, riskLevel: "Medium" },
-  { location: "Mumbai", tourists: 189, incidents: 5, riskLevel: "Low" },
-  { location: "Goa", tourists: 156, incidents: 12, riskLevel: "High" },
-  { location: "Jaipur", tourists: 134, incidents: 15, riskLevel: "High" },
-  { location: "Bangalore", tourists: 167, incidents: 3, riskLevel: "Low" },
+  // Northeast India Focus
+  { location: "Guwahati", tourists: 190, incidents: 8, riskLevel: "Medium" },
+  { location: "Shillong", tourists: 110, incidents: 4, riskLevel: "Low" },
+  { location: "Gangtok", tourists: 130, incidents: 6, riskLevel: "Medium" },
+  { location: "Tawang", tourists: 85, incidents: 3, riskLevel: "Low" },
+  { location: "Kaziranga", tourists: 155, incidents: 5, riskLevel: "Low" },
+  { location: "Imphal", tourists: 55, incidents: 7, riskLevel: "High" },
+  { location: "Kohima", tourists: 60, incidents: 2, riskLevel: "Low" },
+  { location: "Aizawl", tourists: 45, incidents: 3, riskLevel: "Low" },
+  { location: "Agartala", tourists: 35, incidents: 2, riskLevel: "Low" },
+  { location: "Cherrapunji", tourists: 65, incidents: 4, riskLevel: "Medium" },
+  { location: "Pelling", tourists: 45, incidents: 1, riskLevel: "Low" },
+  { location: "Bomdila", tourists: 35, incidents: 2, riskLevel: "Low" },
+  { location: "Loktak Lake", tourists: 75, incidents: 3, riskLevel: "Low" },
+  { location: "Dimapur", tourists: 40, incidents: 2, riskLevel: "Low" },
+  { location: "Tezpur", tourists: 35, incidents: 1, riskLevel: "Low" },
 ]
 
 const dailyActivityData = [
   { hour: "00", alerts: 2, tourists: 45 },
+  { hour: "02", alerts: 1, tourists: 28 },
   { hour: "04", alerts: 1, tourists: 32 },
+  { hour: "06", alerts: 3, tourists: 67 },
   { hour: "08", alerts: 8, tourists: 156 },
+  { hour: "10", alerts: 12, tourists: 198 },
   { hour: "12", alerts: 15, tourists: 234 },
+  { hour: "14", alerts: 18, tourists: 267 },
   { hour: "16", alerts: 12, tourists: 198 },
+  { hour: "18", alerts: 9, tourists: 178 },
   { hour: "20", alerts: 6, tourists: 167 },
+  { hour: "22", alerts: 4, tourists: 89 },
 ]
 
 interface MetricCardProps {

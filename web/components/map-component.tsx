@@ -2,32 +2,137 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { MapPin, Shield, Navigation } from "lucide-react"
+import { MapPin, Shield, Navigation, Activity } from "lucide-react"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 
-// Mock data for tourist locations and risk zones with real coordinates
+// Mock data for tourist locations and risk zones with real coordinates - Northeast India Focus
 const touristLocations = [
-  { id: 1, lat: 27.585, lng: 91.85, name: "Tawang", tourists: 85, type: "safe", area: "Tawang Monastery" },
-  { id: 2, lat: 25.57, lng: 91.88, name: "Shillong", tourists: 110, type: "safe", area: "Umiam Lake" },
-  { id: 3, lat: 26.65, lng: 93.36, name: "Kaziranga", tourists: 155, type: "safe", area: "National Park" },
-  { id: 4, lat: 27.33, lng: 88.61, name: "Gangtok", tourists: 130, type: "safe", area: "Tsomgo Lake" },
-  { id: 5, lat: 24.58, lng: 93.84, name: "Loktak Lake", tourists: 75, type: "safe", area: "Floating National Park" },
-  { id: 6, lat: 25.6669, lng: 94.1062, name: "Kohima", tourists: 60, type: "safe", area: "War Cemetery" },
-  { id: 7, lat: 26.1445, lng: 91.7362, name: "Guwahati", tourists: 190, type: "safe", area: "Kamakhya Temple" },
+  // Assam
+  { id: 1, lat: 26.1445, lng: 91.7362, name: "Guwahati", tourists: 190, type: "safe", area: "Kamakhya Temple" },
+  { id: 2, lat: 26.65, lng: 93.36, name: "Kaziranga", tourists: 155, type: "safe", area: "National Park" },
+  { id: 3, lat: 26.1833, lng: 91.7333, name: "Dispur", tourists: 45, type: "safe", area: "Assam Secretariat" },
+  { id: 4, lat: 26.75, lng: 92.8333, name: "Tezpur", tourists: 35, type: "safe", area: "Agnigarh Hill" },
+  { id: 5, lat: 26.9667, lng: 94.6167, name: "Jorhat", tourists: 28, type: "safe", area: "Tocklai Tea Research" },
+  { id: 6, lat: 26.8, lng: 93.4333, name: "Nagaon", tourists: 22, type: "safe", area: "Kaliabhomora Bridge" },
+  
+  // Meghalaya
+  { id: 7, lat: 25.57, lng: 91.88, name: "Shillong", tourists: 110, type: "safe", area: "Umiam Lake" },
+  { id: 8, lat: 25.3, lng: 91.5833, name: "Cherrapunji", tourists: 65, type: "safe", area: "Nohkalikai Falls" },
+  { id: 9, lat: 25.5167, lng: 91.2667, name: "Mawsynram", tourists: 25, type: "safe", area: "Wettest Place on Earth" },
+  { id: 10, lat: 25.4667, lng: 91.8833, name: "Dawki", tourists: 40, type: "safe", area: "Crystal Clear River" },
+  
+  // Arunachal Pradesh
+  { id: 11, lat: 27.585, lng: 91.85, name: "Tawang", tourists: 85, type: "safe", area: "Tawang Monastery" },
+  { id: 12, lat: 28.2167, lng: 94.6667, name: "Bomdila", tourists: 35, type: "safe", area: "Bomdila Monastery" },
+  { id: 13, lat: 28.0667, lng: 95.3333, name: "Ziro", tourists: 30, type: "safe", area: "Ziro Music Festival" },
+  { id: 14, lat: 28.2167, lng: 96.25, name: "Pasighat", tourists: 25, type: "safe", area: "Daying Ering Wildlife" },
+  { id: 15, lat: 27.5833, lng: 96.1667, name: "Roing", tourists: 20, type: "safe", area: "Mehao Wildlife Sanctuary" },
+  
+  // Sikkim
+  { id: 16, lat: 27.33, lng: 88.61, name: "Gangtok", tourists: 130, type: "safe", area: "Tsomgo Lake" },
+  { id: 17, lat: 27.3667, lng: 88.2167, name: "Pelling", tourists: 45, type: "safe", area: "Kanchenjunga View" },
+  { id: 18, lat: 27.4333, lng: 88.1333, name: "Ravangla", tourists: 30, type: "safe", area: "Buddha Park" },
+  { id: 19, lat: 27.7, lng: 88.6333, name: "Lachung", tourists: 35, type: "safe", area: "Yumthang Valley" },
+  { id: 20, lat: 27.75, lng: 88.7, name: "Lachen", tourists: 25, type: "safe", area: "Gurudongmar Lake" },
+  
+  // Nagaland
+  { id: 21, lat: 25.6669, lng: 94.1062, name: "Kohima", tourists: 60, type: "safe", area: "War Cemetery" },
+  { id: 22, lat: 25.9167, lng: 93.7333, name: "Dimapur", tourists: 40, type: "safe", area: "Kachari Ruins" },
+  { id: 23, lat: 26.1, lng: 94.5333, name: "Mokokchung", tourists: 25, type: "safe", area: "Ao Village" },
+  { id: 24, lat: 26.3167, lng: 94.5167, name: "Wokha", tourists: 20, type: "safe", area: "Doyang River" },
+  
+  // Manipur
+  { id: 25, lat: 24.817, lng: 93.935, name: "Imphal", tourists: 55, type: "safe", area: "Kangla Fort" },
+  { id: 26, lat: 24.58, lng: 93.84, name: "Loktak Lake", tourists: 75, type: "safe", area: "Floating National Park" },
+  { id: 27, lat: 24.8, lng: 93.95, name: "Thoubal", tourists: 15, type: "safe", area: "Thoubal River" },
+  { id: 28, lat: 24.5, lng: 94.0167, name: "Bishnupur", tourists: 18, type: "safe", area: "Vishnu Temple" },
+  
+  // Mizoram
+  { id: 29, lat: 23.7271, lng: 92.7176, name: "Aizawl", tourists: 45, type: "safe", area: "Durtlang Hills" },
+  { id: 30, lat: 23.3167, lng: 92.7167, name: "Lunglei", tourists: 20, type: "safe", area: "Khawnglung Wildlife" },
+  { id: 31, lat: 23.7333, lng: 92.7167, name: "Champhai", tourists: 15, type: "safe", area: "Rih Dil Lake" },
+  
+  // Tripura
+  { id: 32, lat: 23.8315, lng: 91.2862, name: "Agartala", tourists: 35, type: "safe", area: "Ujjayanta Palace" },
+  { id: 33, lat: 23.5167, lng: 91.4833, name: "Udaipur", tourists: 25, type: "safe", area: "Tripura Sundari Temple" },
+  { id: 34, lat: 24.1333, lng: 91.7, name: "Dharmanagar", tourists: 18, type: "safe", area: "Unakoti Rock Cut" },
 ];
 
 const riskZones = [
-  { id: 1, lat: 26.148, lng: 91.78, name: "Dispur", risk: "medium", incidents: 1, reason: "Crowded market area" },
-  { id: 2, lat: 24.817, lng: 93.935, name: "Imphal Central", risk: "high", incidents: 2, reason: "Traffic and theft reports" },
-  { id: 3, lat: 26.5, lng: 93.3, name: "Kopili Fault Zone", risk: "high", incidents: 5, reason: "High seismic activity" },
+  // Assam Risk Zones
+  { id: 1, lat: 26.148, lng: 91.78, name: "Dispur Market", risk: "medium", incidents: 1, reason: "Crowded market area" },
+  { id: 2, lat: 26.5, lng: 93.3, name: "Kopili Fault Zone", risk: "high", incidents: 5, reason: "High seismic activity" },
+  { id: 3, lat: 26.2, lng: 91.8, name: "Guwahati Railway Station", risk: "medium", incidents: 2, reason: "Pickpocketing incidents" },
+  
+  // Meghalaya Risk Zones
   { id: 4, lat: 25.56, lng: 91.89, name: "Shillong Bypass", risk: "medium", incidents: 1, reason: "Prone to landslides" },
+  { id: 5, lat: 25.3, lng: 91.6, name: "Cherrapunji Roads", risk: "high", incidents: 3, reason: "Slippery roads during monsoon" },
+  
+  // Manipur Risk Zones
+  { id: 6, lat: 24.817, lng: 93.935, name: "Imphal Central", risk: "high", incidents: 2, reason: "Traffic and theft reports" },
+  { id: 7, lat: 24.6, lng: 93.8, name: "Loktak Lake Area", risk: "medium", incidents: 1, reason: "Isolated tourist spots" },
+  
+  // Nagaland Risk Zones
+  { id: 8, lat: 25.7, lng: 94.1, name: "Kohima Hills", risk: "medium", incidents: 1, reason: "Remote trekking areas" },
+  { id: 9, lat: 25.9, lng: 93.7, name: "Dimapur Industrial", risk: "low", incidents: 1, reason: "Industrial area safety" },
+  
+  // Arunachal Pradesh Risk Zones
+  { id: 10, lat: 27.6, lng: 91.9, name: "Tawang Border", risk: "high", incidents: 4, reason: "Restricted border area" },
+  { id: 11, lat: 28.2, lng: 94.7, name: "Bomdila Pass", risk: "medium", incidents: 2, reason: "High altitude risks" },
+  
+  // Sikkim Risk Zones
+  { id: 12, lat: 27.4, lng: 88.6, name: "Gangtok Traffic", risk: "low", incidents: 1, reason: "Traffic congestion" },
+  { id: 13, lat: 27.7, lng: 88.6, name: "Lachung Valley", risk: "medium", incidents: 1, reason: "Weather-dependent access" },
+];
+
+// Heat map data for activity intensity visualization
+const heatMapData = [
+  // Sikkim - High activity (red zone)
+  { lat: 27.33, lng: 88.61, intensity: 0.9, region: "Gangtok" },
+  { lat: 27.3667, lng: 88.2167, intensity: 0.8, region: "Pelling" },
+  { lat: 27.4333, lng: 88.1333, intensity: 0.7, region: "Ravangla" },
+  { lat: 27.7, lng: 88.6333, intensity: 0.6, region: "Lachung" },
+  { lat: 27.75, lng: 88.7, intensity: 0.5, region: "Lachen" },
+  
+  // Assam - Medium activity (orange zone)
+  { lat: 26.1445, lng: 91.7362, intensity: 0.7, region: "Guwahati" },
+  { lat: 26.65, lng: 93.36, intensity: 0.6, region: "Kaziranga" },
+  { lat: 26.1833, lng: 91.7333, intensity: 0.4, region: "Dispur" },
+  { lat: 26.75, lng: 92.8333, intensity: 0.3, region: "Tezpur" },
+  
+  // Meghalaya - Medium activity (orange zone)
+  { lat: 25.57, lng: 91.88, intensity: 0.6, region: "Shillong" },
+  { lat: 25.3, lng: 91.5833, intensity: 0.5, region: "Cherrapunji" },
+  { lat: 25.5167, lng: 91.2667, intensity: 0.3, region: "Mawsynram" },
+  
+  // Arunachal Pradesh - Low activity (yellow zone)
+  { lat: 27.585, lng: 91.85, intensity: 0.4, region: "Tawang" },
+  { lat: 28.2167, lng: 94.6667, intensity: 0.3, region: "Bomdila" },
+  { lat: 28.0667, lng: 95.3333, intensity: 0.2, region: "Ziro" },
+  
+  // Nagaland - Low activity (yellow zone)
+  { lat: 25.6669, lng: 94.1062, intensity: 0.3, region: "Kohima" },
+  { lat: 25.9167, lng: 93.7333, intensity: 0.2, region: "Dimapur" },
+  
+  // Manipur - Medium activity (orange zone)
+  { lat: 24.817, lng: 93.935, intensity: 0.5, region: "Imphal" },
+  { lat: 24.58, lng: 93.84, intensity: 0.4, region: "Loktak Lake" },
+  
+  // Mizoram - Low activity (yellow zone)
+  { lat: 23.7271, lng: 92.7176, intensity: 0.3, region: "Aizawl" },
+  { lat: 23.3167, lng: 92.7167, intensity: 0.2, region: "Lunglei" },
+  
+  // Tripura - Low activity (yellow zone)
+  { lat: 23.8315, lng: 91.2862, intensity: 0.3, region: "Agartala" },
+  { lat: 23.5167, lng: 91.4833, intensity: 0.2, region: "Udaipur" },
 ];
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ""
 
 export function MapComponent() {
   const [mapLoaded, setMapLoaded] = useState(false)
+  const [showHeatMap, setShowHeatMap] = useState(true)
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<mapboxgl.Marker[]>([])
@@ -41,14 +146,15 @@ export function MapComponent() {
       const map = new mapboxgl.Map({
         container: mapRef.current as HTMLDivElement,
         style: "mapbox://styles/mapbox/streets-v11",
-        center: [91.7362, 26.1445], // Corrected coordinates for Guwahati
-        zoom: 10,
+        center: [93.5, 26.0], // Centered on Northeast India
+        zoom: 6,
       })
 
       mapInstanceRef.current = map
 
       map.on("load", () => {
         addMarkers(map)
+        addHeatMapLayer(map)
         setMapLoaded(true)
       })
 
@@ -61,6 +167,99 @@ export function MapComponent() {
       }
     }
   }, [])
+
+  const addHeatMapLayer = (map: mapboxgl.Map) => {
+    // Add heat map data source
+    map.addSource('heatmap', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: heatMapData.map(point => ({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [point.lng, point.lat]
+          },
+          properties: {
+            intensity: point.intensity,
+            region: point.region
+          }
+        }))
+      }
+    })
+
+    // Add heat map layer
+    map.addLayer({
+      id: 'heatmap',
+      type: 'heatmap',
+      source: 'heatmap',
+      maxzoom: 15,
+      paint: {
+        'heatmap-weight': [
+          'interpolate',
+          ['linear'],
+          ['get', 'intensity'],
+          0, 0,
+          1, 1
+        ],
+        'heatmap-intensity': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          0, 1,
+          15, 3
+        ],
+        'heatmap-color': [
+          'interpolate',
+          ['linear'],
+          ['heatmap-density'],
+          0, 'rgba(33, 102, 172, 0)',
+          0.1, 'rgb(103, 169, 207)',
+          0.3, 'rgb(209, 229, 240)',
+          0.5, 'rgb(253, 219, 199)',
+          0.7, 'rgb(239, 138, 98)',
+          1, 'rgb(178, 24, 43)'
+        ],
+        'heatmap-radius': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          0, 2,
+          15, 20
+        ],
+        'heatmap-opacity': showHeatMap ? 0.8 : 0
+      }
+    })
+
+    // Add heat map points layer for better visibility
+    map.addLayer({
+      id: 'heatmap-points',
+      type: 'circle',
+      source: 'heatmap',
+      minzoom: 14,
+      paint: {
+        'circle-radius': [
+          'interpolate',
+          ['linear'],
+          ['get', 'intensity'],
+          0, 5,
+          1, 15
+        ],
+        'circle-color': [
+          'interpolate',
+          ['linear'],
+          ['get', 'intensity'],
+          0, '#22c55e',
+          0.3, '#f59e0b',
+          0.6, '#f97316',
+          1, '#ef4444'
+        ],
+        'circle-opacity': showHeatMap ? 0.7 : 0,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff'
+      }
+    })
+  }
 
   const addMarkers = (map: mapboxgl.Map) => {
     // Clear existing markers
@@ -147,11 +346,26 @@ export function MapComponent() {
 
   const handleRecenter = () => {
     mapInstanceRef.current?.flyTo({
-      center: [78.9629, 20.5937],
-      zoom: 4,
+      center: [93.5, 26.0],
+      zoom: 6,
       essential: true,
     })
   }
+
+  const toggleHeatMap = () => {
+    setShowHeatMap(!showHeatMap)
+  }
+
+  // Update heat map visibility when showHeatMap changes
+  useEffect(() => {
+    if (mapInstanceRef.current && mapLoaded) {
+      const map = mapInstanceRef.current
+      if (map.getLayer('heatmap')) {
+        map.setPaintProperty('heatmap', 'heatmap-opacity', showHeatMap ? 0.8 : 0)
+        map.setPaintProperty('heatmap-points', 'circle-opacity', showHeatMap ? 0.7 : 0)
+      }
+    }
+  }, [showHeatMap, mapLoaded])
 
   return (
     <div className="relative">
@@ -197,6 +411,15 @@ export function MapComponent() {
           >
             <Navigation className="h-4 w-4" />
           </Button>
+          <Button
+            variant={showHeatMap ? "default" : "outline"}
+            size="sm"
+            onClick={toggleHeatMap}
+            className="w-10 h-10 p-0 bg-white/95 hover:bg-white shadow-lg"
+            title="Toggle Heat Map"
+          >
+            <Activity className="h-4 w-4" />
+          </Button>
         </div>
 
         <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 border">
@@ -235,6 +458,33 @@ export function MapComponent() {
             <span className="text-gray-600">Safe Areas</span>
           </div>
         </div>
+        
+        {showHeatMap && (
+          <div className="mt-4 pt-4 border-t">
+            <h5 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Activity Heat Map
+            </h5>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <span className="text-gray-600">High Activity (Sikkim)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                <span className="text-gray-600">Medium Activity</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <span className="text-gray-600">Low Activity</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span className="text-gray-600">Minimal Activity</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

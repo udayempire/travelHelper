@@ -20,7 +20,7 @@ export function DashboardOverview() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">India Tourist Heatmap</CardTitle>
+              <CardTitle className="text-lg font-semibold">Northeast India Tourist Heatmap</CardTitle>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1">

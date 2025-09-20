@@ -6,7 +6,7 @@ import './globals.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 export const metadata: Metadata = {
-  title: 'TripShield',
+  title: 'Kavach',
   description: 'To make your trips secured',
 }
 
