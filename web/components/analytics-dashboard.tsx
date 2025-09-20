@@ -237,7 +237,8 @@ export function AnalyticsDashboard() {
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  //@ts-ignore
+                  label={({ name, value, total }: { name: string; value: number; total: number }) => `${name} ${((value / total) * 100).toFixed(0)}%`}
                 >
                   {incidentTypeData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
