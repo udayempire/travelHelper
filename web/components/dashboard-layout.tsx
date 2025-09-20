@@ -33,9 +33,10 @@ const navigation = [
   { id: 1, name: "Dashboard", href: "/", icon: LayoutDashboard },
   { id: 2, name: "Tourist Records", href: "/tourist", icon: Users },
   { id: 3, name: "Map View", href: "/map", icon: Map },
-  { id: 4, name: "Active Alerts", href: "/active-alerts", icon: AlertTriangle },
-  { id: 5, name: "E-FIR History", href: "/efir-history", icon: FileText },
-  { id: 6, name: "Analytics", href: "/analytics", icon: BarChart3 },
+  { id: 4, name: "SOS Monitor", href: "/sos-monitor", icon: Shield },
+  { id: 5, name: "Active Alerts", href: "/active-alerts", icon: AlertTriangle },
+  { id: 6, name: "E-FIR History", href: "/efir-history", icon: FileText },
+  { id: 7, name: "Analytics", href: "/analytics", icon: BarChart3 },
 ]
 
 const adminNavigation = [
@@ -62,7 +63,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="fixed left-0 top-0 h-full w-64 bg-sidebar border-r border-sidebar-border">
           <div className="flex h-16 items-center justify-between px-4">
             <div className="flex flex-col items-center gap-2">
-              <Image src={"logo.png"} width={60} height={60} alt="logo" />
+              <Image src={"Kawach-Logo.png"} width={60} height={60} alt="logo" />
               <span className="text-lg font-semibold text-sidebar-foreground">Kavach</span>
             </div>
             <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
