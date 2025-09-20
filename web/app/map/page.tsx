@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { MapPin, Search, Users, AlertTriangle, Maximize2, Minimize2, Filter, Layers } from "lucide-react"
 
@@ -30,7 +31,22 @@ export default function MapPage(): JSX.Element {
   const [showFilters, setShowFilters] = useState(false)
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [mapError, setMapError] = useState(false)
+  const [selectedLocation, setSelectedLocation] = useState("current")
   const { toast } = useToast()
+
+  // Location options for the selector
+  const locationOptions = [
+    { value: "current", label: "Current Location", center: [77.524618, 23.251202] },
+    { value: "delhi", label: "Delhi", center: [77.2090, 28.6139] },
+    { value: "mumbai", label: "Mumbai", center: [72.8777, 19.0760] },
+    { value: "bangalore", label: "Bangalore", center: [77.5946, 12.9716] },
+    { value: "kolkata", label: "Kolkata", center: [88.3639, 22.5726] },
+    { value: "chennai", label: "Chennai", center: [80.2707, 13.0827] },
+    { value: "hyderabad", label: "Hyderabad", center: [78.4867, 17.3850] },
+    { value: "pune", label: "Pune", center: [73.8567, 18.5204] },
+    { value: "ahmedabad", label: "Ahmedabad", center: [72.5714, 23.0225] },
+    { value: "jaipur", label: "Jaipur", center: [75.7873, 26.9124] }
+  ]
 
   useEffect(() => {
     loadMap()
@@ -59,7 +75,7 @@ export default function MapPage(): JSX.Element {
       const mapInstance = new mapboxgl.Map({
         container: mapRef.current!,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [77.2090, 28.6139], // Delhi coordinates
+        center: [77.524618, 23.251202], // Updated coordinates
         zoom: 10
       })
 
@@ -84,13 +100,13 @@ export default function MapPage(): JSX.Element {
       // Simulate API call - replace with actual API
       await new Promise((r) => setTimeout(r, 1000))
       
-      // Dummy data for now
+      // Dummy data for now - green markers spread out, red heatmap points clustered
       const dummyTourists: TouristLocation[] = [
         {
           id: "tourist-1",
-          name: "John Doe",
-          lat: 28.6139,
-          lng: 77.2090,
+          name: "Rahul Sharma",
+          lat: 23.251202,
+          lng: 77.524618,
           status: 'active',
           lastSeen: new Date().toISOString(),
           phone: "+91 98765 43210",
@@ -98,9 +114,9 @@ export default function MapPage(): JSX.Element {
         },
         {
           id: "tourist-2",
-          name: "Jane Smith",
-          lat: 28.6141,
-          lng: 77.2092,
+          name: "Priya Patel",
+          lat: 23.2518,
+          lng: 77.5255,
           status: 'active',
           lastSeen: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
           phone: "+91 98765 43211",
@@ -108,13 +124,103 @@ export default function MapPage(): JSX.Element {
         },
         {
           id: "tourist-3",
-          name: "Bob Johnson",
-          lat: 28.6143,
-          lng: 77.2094,
-          status: 'expired',
-          lastSeen: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          name: "Amit Kumar",
+          lat: 23.2505,
+          lng: 77.5238,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
           phone: "+91 98765 43212",
           aadhaar: "123456789014"
+        },
+        {
+          id: "tourist-4",
+          name: "Sneha Singh",
+          lat: 23.2522,
+          lng: 77.5250,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43213",
+          aadhaar: "123456789015"
+        },
+        {
+          id: "tourist-5",
+          name: "Vikram Gupta",
+          lat: 23.2500,
+          lng: 77.5252,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43214",
+          aadhaar: "123456789016"
+        },
+        {
+          id: "tourist-6",
+          name: "Anita Verma",
+          lat: 23.2515,
+          lng: 77.5235,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43215",
+          aadhaar: "123456789017"
+        },
+        {
+          id: "tourist-7",
+          name: "Rajesh Tiwari",
+          lat: 23.2525,
+          lng: 77.5240,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43216",
+          aadhaar: "123456789018"
+        },
+        {
+          id: "tourist-8",
+          name: "Meera Joshi",
+          lat: 23.2508,
+          lng: 77.5260,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43217",
+          aadhaar: "123456789019"
+        },
+        {
+          id: "tourist-9",
+          name: "Suresh Yadav",
+          lat: 23.2520,
+          lng: 77.5230,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43218",
+          aadhaar: "123456789020"
+        },
+        {
+          id: "tourist-10",
+          name: "Kavita Singh",
+          lat: 23.2495,
+          lng: 77.5245,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43219",
+          aadhaar: "123456789021"
+        },
+        {
+          id: "tourist-11",
+          name: "Ravi Kumar",
+          lat: 23.2530,
+          lng: 77.5258,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 35 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43220",
+          aadhaar: "123456789022"
+        },
+        {
+          id: "tourist-12",
+          name: "Pooja Sharma",
+          lat: 23.2498,
+          lng: 77.5265,
+          status: 'active',
+          lastSeen: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
+          phone: "+91 98765 43221",
+          aadhaar: "123456789023"
         }
       ]
 
@@ -132,22 +238,64 @@ export default function MapPage(): JSX.Element {
   const addMarkersToMap = (touristData: TouristLocation[]) => {
     if (!map) return
 
-    // Clear existing markers
+    // Clear existing markers and circles
     const existingMarkers = document.querySelectorAll('.mapboxgl-marker')
     existingMarkers.forEach(marker => marker.remove())
 
     // Use dynamic import to get mapboxgl instance instead of relying on window
     import('mapbox-gl').then(({ default: mapboxgl }) => {
+      // Add all individual markers first
       touristData.forEach(tourist => {
+        // Create green tourist marker
         const el = document.createElement('div')
         el.className = 'tourist-marker'
         el.style.width = '20px'
         el.style.height = '20px'
         el.style.borderRadius = '50%'
-        el.style.background = getStatusColor(tourist.status)
+        el.style.background = '#10b981' // Green color for tourists
         el.style.border = '2px solid white'
         el.style.cursor = 'pointer'
         el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)'
+        el.style.zIndex = '1000'
+
+        // Create hover tooltip
+        const tooltip = document.createElement('div')
+        tooltip.className = 'tourist-tooltip'
+        tooltip.style.position = 'absolute'
+        tooltip.style.background = 'white'
+        tooltip.style.padding = '8px 12px'
+        tooltip.style.borderRadius = '6px'
+        tooltip.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'
+        tooltip.style.border = '1px solid #e5e7eb'
+        tooltip.style.fontSize = '12px'
+        tooltip.style.whiteSpace = 'nowrap'
+        tooltip.style.zIndex = '1001'
+        tooltip.style.pointerEvents = 'none'
+        tooltip.style.opacity = '0'
+        tooltip.style.transition = 'opacity 0.2s ease'
+        tooltip.style.transform = 'translate(-50%, -100%)'
+        tooltip.style.marginTop = '-8px'
+
+        // Tooltip content
+        tooltip.innerHTML = `
+          <div style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">${tourist.name}</div>
+          <div style="color: #6b7280; margin-bottom: 2px;">📱 ${tourist.phone}</div>
+          <div style="color: #6b7280; margin-bottom: 2px;">🆔 ${tourist.aadhaar}</div>
+          <div style="color: #6b7280; margin-bottom: 2px;">📍 Last seen: ${new Date(tourist.lastSeen).toLocaleString()}</div>
+          <div style="color: #6b7280;">Status: <span style="color: ${tourist.status === 'active' ? '#10b981' : tourist.status === 'expired' ? '#ef4444' : '#f59e0b'}">${tourist.status.toUpperCase()}</span></div>
+        `
+
+        // Add tooltip to marker
+        el.appendChild(tooltip)
+
+        // Hover events
+        el.addEventListener('mouseenter', () => {
+          tooltip.style.opacity = '1'
+        })
+
+        el.addEventListener('mouseleave', () => {
+          tooltip.style.opacity = '0'
+        })
 
         el.addEventListener('click', () => {
           setSelectedTourist(tourist)
@@ -157,10 +305,61 @@ export default function MapPage(): JSX.Element {
           })
         })
 
+        // Add the green tourist marker
         new mapboxgl.Marker(el)
           .setLngLat([tourist.lng, tourist.lat])
           .addTo(map)
       })
+
+      // Add red heatmap points (smaller, clustered)
+      const heatmapPoints = [
+        { lat: 23.251202, lng: 77.524618 },
+        { lat: 23.251205, lng: 77.524620 },
+        { lat: 23.251200, lng: 77.524615 },
+        { lat: 23.251208, lng: 77.524622 },
+        { lat: 23.251198, lng: 77.524616 },
+        { lat: 23.251206, lng: 77.524619 }
+      ]
+
+      heatmapPoints.forEach((point, index) => {
+        const heatmapEl = document.createElement('div')
+        heatmapEl.className = 'heatmap-marker'
+        heatmapEl.style.width = '12px'
+        heatmapEl.style.height = '12px'
+        heatmapEl.style.borderRadius = '50%'
+        heatmapEl.style.background = '#ef4444' // Red color for heatmap
+        heatmapEl.style.border = '1px solid white'
+        heatmapEl.style.boxShadow = '0 1px 3px rgba(0,0,0,0.3)'
+        heatmapEl.style.zIndex = '998'
+        heatmapEl.style.pointerEvents = 'none'
+
+        new mapboxgl.Marker(heatmapEl)
+          .setLngLat([point.lng, point.lat])
+          .addTo(map)
+      })
+
+      // Add a single circular radius around the center of all points
+      if (touristData.length > 0) {
+        const centerLat = 23.251202
+        const centerLng = 77.524618
+        
+        const circleEl = document.createElement('div')
+        circleEl.className = 'heatmap-circle'
+        circleEl.style.width = '200px'
+        circleEl.style.height = '200px'
+        circleEl.style.borderRadius = '50%'
+        circleEl.style.background = 'rgba(239, 68, 68, 0.15)' // Semi-transparent red
+        circleEl.style.border = '3px solid rgba(239, 68, 68, 0.3)'
+        circleEl.style.position = 'absolute'
+        circleEl.style.transform = 'translate(-50%, -50%)'
+        circleEl.style.pointerEvents = 'none'
+        circleEl.style.zIndex = '997'
+
+        // Add the single circle marker at center
+        new mapboxgl.Marker(circleEl)
+          .setLngLat([centerLng, centerLat])
+          .addTo(map)
+      }
     })
   }
 
@@ -179,6 +378,18 @@ export default function MapPage(): JSX.Element {
       case 'expired': return 'destructive'
       case 'pending': return 'secondary'
       default: return 'outline'
+    }
+  }
+
+  const handleLocationChange = (locationValue: string) => {
+    setSelectedLocation(locationValue)
+    const location = locationOptions.find(opt => opt.value === locationValue)
+    if (location && map) {
+      map.flyTo({
+        center: location.center,
+        zoom: 10,
+        duration: 2000
+      })
     }
   }
 
@@ -269,6 +480,18 @@ export default function MapPage(): JSX.Element {
             >
               <Filter className="h-4 w-4" />
             </Button>
+            <Select value={selectedLocation} onValueChange={handleLocationChange}>
+              <SelectTrigger className="w-40 bg-white/95 backdrop-blur-sm shadow-lg border-2">
+                <SelectValue placeholder="Select Location" />
+              </SelectTrigger>
+              <SelectContent>
+                {locationOptions.map((location) => (
+                  <SelectItem key={location.value} value={location.value}>
+                    {location.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Search Overlay */}
