@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import db from '../lib/db'
+import { getDb } from '../lib/db'
 
 function parseCookies(header: string | null): Record<string, string> {
   const cookies: Record<string, string> = {}
@@ -15,7 +15,7 @@ function parseCookies(header: string | null): Record<string, string> {
   return cookies
 }
 
-const adminRouter = new Hono()
+const adminRouter = new Hono<{ Bindings: { DATABASE_URL: string } }>()
 
 adminRouter.post('/login', async (c) => {
   try {
@@ -30,6 +30,7 @@ adminRouter.post('/login', async (c) => {
       return c.json({ error: 'blockchainId login not implemented' }, 501)
     }
 
+    const db = getDb(c.env.DATABASE_URL)
     const user = await db.user.findUnique({ where: { email: body.email! } })
     if (!user) {
       return c.json({ error: 'Invalid credentials' }, 401)
@@ -60,6 +61,7 @@ adminRouter.get('/me', async (c) => {
       return c.json({ error: 'Not authenticated' }, 401)
     }
 
+    const db = getDb(c.env.DATABASE_URL)
     const user = await db.user.findUnique({ where: { id: sessionId } })
     if (!user) {
       return c.json({ error: 'Session invalid' }, 401)

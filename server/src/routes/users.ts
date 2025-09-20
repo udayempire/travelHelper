@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
-import db from '../lib/db'
+import { getDb } from '../lib/db'
 
-const usersRouter = new Hono()
+const usersRouter = new Hono<{ Bindings: { DATABASE_URL: string } }>()
 
 // POST /api/admin/users
 usersRouter.post('/', async (c) => {
@@ -13,6 +13,7 @@ usersRouter.post('/', async (c) => {
     }
     if (!body.name || !body.email) return c.json({ error: 'Missing name or email' }, 400)
 
+    const db = getDb(c.env.DATABASE_URL)
     const existing = await db.user.findUnique({ where: { email: body.email } })
     if (existing) return c.json({ error: 'User already exists' }, 409)
 
@@ -33,6 +34,7 @@ usersRouter.post('/', async (c) => {
 // GET /api/admin/users
 usersRouter.get('/', async (c) => {
   try {
+    const db = getDb(c.env.DATABASE_URL)
     const users = await db.user.findMany({
       orderBy: { createdAt: 'desc' },
       select: { id: true, name: true, email: true, role: true, createdAt: true },
@@ -52,6 +54,7 @@ usersRouter.put('/:id', async (c) => {
       role?: 'ADMIN' | 'AUTHORITY'
     }
 
+    const db = getDb(c.env.DATABASE_URL)
     const existing = await db.user.findUnique({ where: { id } })
     if (!existing) return c.json({ error: 'User not found' }, 404)
 
@@ -70,6 +73,7 @@ usersRouter.put('/:id', async (c) => {
 usersRouter.delete('/:id', async (c) => {
   try {
     const id = c.req.param('id')
+    const db = getDb(c.env.DATABASE_URL)
     const existing = await db.user.findUnique({ where: { id } })
     if (!existing) return c.json({ error: 'User not found' }, 404)
     await db.user.delete({ where: { id } })

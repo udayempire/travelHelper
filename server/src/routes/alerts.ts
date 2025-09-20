@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
-import db from '../lib/db'
+import { getDb } from '../lib/db'
 
-const alertsRouter = new Hono()
+const alertsRouter = new Hono<{ Bindings: { DATABASE_URL: string } }>()
 
 // POST /api/admin/alerts
 alertsRouter.post('/', async (c) => {
@@ -17,6 +17,7 @@ alertsRouter.post('/', async (c) => {
       return c.json({ error: 'Missing title or createdById' }, 400)
     }
 
+    const db = getDb(c.env.DATABASE_URL)
     const created = await db.alert.create({
       data: {
         title: body.title,
@@ -40,6 +41,7 @@ alertsRouter.get('/', async (c) => {
     const where: any = {}
     if (status) where.status = status
 
+    const db = getDb(c.env.DATABASE_URL)
     const alerts = await db.alert.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -55,6 +57,7 @@ alertsRouter.get('/', async (c) => {
 alertsRouter.get('/:id', async (c) => {
   try {
     const id = c.req.param('id')
+    const db = getDb(c.env.DATABASE_URL)
     const alert = await db.alert.findUnique({
       where: { id },
       include: { tourist: true, createdBy: { select: { id: true, name: true, email: true } } },
@@ -77,6 +80,7 @@ alertsRouter.put('/:id', async (c) => {
       touristId?: string | null
     }
 
+    const db = getDb(c.env.DATABASE_URL)
     const existing = await db.alert.findUnique({ where: { id } })
     if (!existing) return c.json({ error: 'Alert not found' }, 404)
 
@@ -94,6 +98,7 @@ alertsRouter.put('/:id', async (c) => {
 alertsRouter.delete('/:id', async (c) => {
   try {
     const id = c.req.param('id')
+    const db = getDb(c.env.DATABASE_URL)
     const existing = await db.alert.findUnique({ where: { id } })
     if (!existing) return c.json({ error: 'Alert not found' }, 404)
     await db.alert.delete({ where: { id } })

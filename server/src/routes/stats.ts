@@ -1,11 +1,12 @@
 import { Hono } from 'hono'
-import db from '../lib/db'
+import { getDb } from '../lib/db'
 
-const statsRouter = new Hono()
+const statsRouter = new Hono<{ Bindings: { DATABASE_URL: string } }>()
 
 // GET /api/admin/stats/tourists
 statsRouter.get('/tourists', async (c) => {
   try {
+    const db = getDb(c.env.DATABASE_URL)
     const total = await db.tourist.count()
     const byLocationRaw = await db.tourist.groupBy({
       by: ['location'],
@@ -27,6 +28,7 @@ statsRouter.get('/tourists', async (c) => {
 // GET /api/admin/stats/alerts
 statsRouter.get('/alerts', async (c) => {
   try {
+    const db = getDb(c.env.DATABASE_URL)
     const active = await db.alert.count({ where: { status: 'ACTIVE' } as any })
     const resolved = await db.alert.count({ where: { status: 'RESOLVED' } as any })
     const ongoing = await db.alert.count({ where: { status: 'ONGOING' } as any })
@@ -39,6 +41,7 @@ statsRouter.get('/alerts', async (c) => {
 // GET /api/admin/stats/usage
 statsRouter.get('/usage', async (c) => {
   try {
+    const db = getDb(c.env.DATABASE_URL)
     const logs = await db.usageLog.findMany({
       orderBy: { createdAt: 'desc' },
       take: 200,

@@ -5,7 +5,12 @@ import { alertsRouter } from './routes/alerts'
 import { statsRouter } from './routes/stats'
 import { usersRouter } from './routes/users'
 
-const app = new Hono()
+const app = new Hono<{ Bindings: { DATABASE_URL: string } }>()
+
+type Bindings = {
+  DATABASE_URL: string
+}
+
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')

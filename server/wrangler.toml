@@ -1,0 +1,9 @@
+name = "travel-helper-server"
+main = "src/index.ts"
+compatibility_date = "2025-09-13"
+
+[env.production]
+vars = { ENVIRONMENT = "production" }
+
+[env.development]
+vars = { ENVIRONMENT = "development" }

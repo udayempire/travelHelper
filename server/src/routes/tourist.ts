@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
-import db from '../lib/db'
+import { getDb } from '../lib/db'
 
-const touristRouter = new Hono()
+const touristRouter = new Hono<{ Bindings: { DATABASE_URL: string } }>()
 
 // GET /api/admin/tourist?search=&location=
 touristRouter.get('/', async (c) => {
@@ -21,6 +21,7 @@ touristRouter.get('/', async (c) => {
       where.location = { contains: location, mode: 'insensitive' }
     }
 
+    const db = getDb(c.env.DATABASE_URL)
     const tourists = await db.tourist.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -45,6 +46,7 @@ touristRouter.get('/', async (c) => {
 touristRouter.get('/:id', async (c) => {
   try {
     const id = c.req.param('id')
+    const db = getDb(c.env.DATABASE_URL)
     const tourist = await db.tourist.findUnique({
       where: { id },
       select: {
@@ -75,6 +77,7 @@ touristRouter.put('/:id', async (c) => {
       aadhaar?: string
     }
 
+    const db = getDb(c.env.DATABASE_URL)
     const existing = await db.tourist.findUnique({ where: { id } })
     if (!existing) return c.json({ error: 'Tourist not found' }, 404)
 
@@ -114,6 +117,7 @@ touristRouter.put('/:id', async (c) => {
 touristRouter.delete('/:id', async (c) => {
   try {
     const id = c.req.param('id')
+    const db = getDb(c.env.DATABASE_URL)
     const existing = await db.tourist.findUnique({ where: { id } })
     if (!existing) return c.json({ error: 'Tourist not found' }, 404)
     await db.tourist.delete({ where: { id } })

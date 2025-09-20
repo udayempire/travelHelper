@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+// db.ts
+import { PrismaClient } from '@prisma/client'
 
-
-const db = new PrismaClient();
-
-
-export default db;
+export const getDb = (databaseUrl: string) => {
+  return new PrismaClient({ datasourceUrl: databaseUrl })
+}
